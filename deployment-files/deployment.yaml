@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-go-app
+spec:
+  selector:
+    matchLabels:
+      run: my-go-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-go-app
+    spec:
+      containers:
+      - name: my-go-app
+        image: shiveshabhishek/go-welcome-app
+        ports:
+        - containerPort: 8090
