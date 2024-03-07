@@ -13,13 +13,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Azure CLI
-      uses: azure/cli@v1
+    - name: Azure login
+      uses: azure/login@v1.4.6
       with:
-        azcliversion: '2.0.80'
+        client-id: ${{ secrets.AZURE_SP_APP_ID }}
+        tenant-id: ${{ secrets.AZURE_SP_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Log in to Azure
-      run: az login --service-principal ${{ secrets.AZURE_SP_APP_ID }} --tenant ${{ secrets.AZURE_SP_TENANT_ID }} --password ${{ secrets.AZURE_SP_SECRET }}
+    - name: Set up Azure CLI
+      uses: azure/cli@v2
+      with:
+        azcliversion: '2.30.0'
+        inlineScript: |
+          az account show
+          az storage -h
+
+          #- name: Log in to Azure
+          #  run: az login --service-principal ${{ secrets.AZURE_SP_APP_ID }} --tenant ${{ secrets.AZURE_SP_TENANT_ID }} --password ${{ secrets.AZURE_SP_SECRET }}
 
     - name: Get AKS credentials
       run: az aks get-credentials --resource-group rg-test --name tatatech
